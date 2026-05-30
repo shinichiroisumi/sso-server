@@ -28,7 +28,7 @@
 ### Быстрый старт
 
 ```bash
-git clone https://github.com/shinichiroisumi/sso-server.git
+git clone -b microsoft https://github.com/shinichiroisumi/sso-server.git
 cd sso-server
 
 //Установите зависимости
