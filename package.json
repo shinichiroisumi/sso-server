@@ -1,0 +1,22 @@
+{
+  "name": "sso-enterprise",
+  "version": "1.0.0",
+  "description": "Enterprise SSO Server with Active Directory",
+  "main": "app.js",
+  "scripts": {
+    "setup": "node setup.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "activedirectory2": "^2.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "ldapjs": "^3.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

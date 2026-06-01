@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - Корпоративный аккаунт</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: rgba(255, 255, 255, 0.96);
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --border-color: #cccccc;
+            --border-focus: #0078d7;
+            --input-bg: #ffffff;
+            --button-bg: #0078d7;
+            --button-hover: #005a9e;
+            --button-text: #ffffff;
+            --error-color: #c50500;
+            --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --dot-color: #0078d7;
+            --avatar-bg: #0078d7;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: rgba(27, 27, 27, 0.96);
+                --text-primary: #ffffff;
+                --text-secondary: #cccccc;
+                --border-color: #3c3c3c;
+                --border-focus: #0078d7;
+                --input-bg: #1c1c1c;
+                --button-bg: #0078d7;
+                --button-hover: #005a9e;
+                --button-text: #ffffff;
+                --error-color: #e74856;
+                --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+                --dot-color: #0078d7;
+                --avatar-bg: #0078d7;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #0d1117 0%, #1a1a2e 100%);
+            }
+        }
+
+        .win10-container {
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .win10-card {
+            background: var(--bg-primary);
+            border-radius: 0;
+            padding: 44px 40px 48px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .win10-loading-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: transparent;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s;
+        }
+
+        .win10-loading-track.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .win10-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--dot-color);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+        }
+
+        .win10-loading-track.active .win10-dot:nth-child(1) { animation: dot1 2.4s linear infinite; animation-delay: 0s; }
+        .win10-loading-track.active .win10-dot:nth-child(2) { animation: dot2 2.4s linear infinite; animation-delay: 0.16s; }
+        .win10-loading-track.active .win10-dot:nth-child(3) { animation: dot3 2.4s linear infinite; animation-delay: 0.32s; }
+        .win10-loading-track.active .win10-dot:nth-child(4) { animation: dot4 2.4s linear infinite; animation-delay: 0.48s; }
+        .win10-loading-track.active .win10-dot:nth-child(5) { animation: dot5 2.4s linear infinite; animation-delay: 0.64s; }
+
+        @keyframes dot1 {
+            0% { left: -20px; opacity: 0; }
+            5% { opacity: 1; }
+            25% { left: 48%; opacity: 1; }
+            55% { left: 48%; opacity: 1; }
+            62% { left: 68%; opacity: 1; }
+            70% { left: 78%; opacity: 1; }
+            80% { left: 90%; opacity: 1; }
+            95% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        @keyframes dot2 {
+            0% { left: -20px; opacity: 0; }
+            5% { opacity: 1; }
+            25% { left: 44%; opacity: 1; }
+            55% { left: 44%; opacity: 1; }
+            62% { left: 68%; opacity: 1; }
+            70% { left: 78%; opacity: 1; }
+            80% { left: 90%; opacity: 1; }
+            95% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        @keyframes dot3 {
+            0% { left: -20px; opacity: 0; }
+            5% { opacity: 1; }
+            25% { left: 40%; opacity: 1; }
+            55% { left: 40%; opacity: 1; }
+            62% { left: 68%; opacity: 1; }
+            70% { left: 78%; opacity: 1; }
+            80% { left: 90%; opacity: 1; }
+            95% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        @keyframes dot4 {
+            0% { left: -20px; opacity: 0; }
+            5% { opacity: 1; }
+            25% { left: 36%; opacity: 1; }
+            55% { left: 36%; opacity: 1; }
+            62% { left: 68%; opacity: 1; }
+            70% { left: 78%; opacity: 1; }
+            80% { left: 90%; opacity: 1; }
+            95% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        @keyframes dot5 {
+            0% { left: -20px; opacity: 0; }
+            5% { opacity: 1; }
+            25% { left: 32%; opacity: 1; }
+            55% { left: 32%; opacity: 1; }
+            62% { left: 68%; opacity: 1; }
+            70% { left: 78%; opacity: 1; }
+            80% { left: 90%; opacity: 1; }
+            95% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        .win10-logo-section {
+            margin-bottom: 32px;
+            text-align: left;
+        }
+
+        .win10-logo {
+            margin-bottom: 28px;
+        }
+
+        .win10-welcome h1 {
+            font-size: 28px;
+            font-weight: 300;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .win10-welcome p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .step {
+            display: block;
+        }
+
+        .step.hidden {
+            display: none;
+        }
+
+        .win10-form-group {
+            margin-bottom: 20px;
+        }
+
+        .win10-input {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-family: 'Segoe UI', sans-serif;
+            border: 1px solid var(--border-color);
+            border-radius: 0;
+            outline: none;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .win10-input:hover {
+            border-color: #767676;
+        }
+
+        .win10-input:focus {
+            border-color: var(--border-focus);
+            border-width: 2px;
+            padding: 9px 11px;
+        }
+
+        .win10-input.error {
+            border-color: var(--error-color);
+        }
+
+        .win10-password-wrapper {
+            position: relative;
+        }
+
+        .win10-toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 18px;
+            user-select: none;
+        }
+
+        .win10-toggle-password:hover {
+            color: var(--text-primary);
+        }
+
+        .user-info-card {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            overflow: hidden;
+            background: var(--avatar-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-avatar .material-icons {
+            font-size: 56px;
+            color: white;
+        }
+
+        .user-name {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .user-email {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .back-link {
+            color: var(--border-focus);
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .win10-btn {
+            padding: 8px 16px;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 0;
+            font-size: 14px;
+            font-weight: 400;
+            font-family: 'Segoe UI', sans-serif;
+            cursor: pointer;
+            min-width: 80px;
+        }
+
+        .win10-btn:hover {
+            background: var(--button-hover);
+        }
+
+        .win10-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .win10-btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .win10-btn-secondary:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .win10-error-message {
+            color: var(--error-color);
+            font-size: 12px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .win10-error-message .material-icons {
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .win10-card {
+                padding: 32px 24px 36px;
+            }
+            .win10-welcome h1 {
+                font-size: 24px;
+            }
+            body {
+                padding: 16px;
+            }
+            .user-avatar {
+                width: 80px;
+                height: 80px;
+            }
+            .win10-logo .material-icons {
+                font-size: 28px;
+            }
+            .win10-logo span:last-child {
+                font-size: 16px;
+            }
+        }
+
+        .win10-btn-loader {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: win10Spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes win10Spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="win10-container">
+        <div class="win10-card">
+            <div class="win10-loading-track" id="loadingTrack">
+                <div class="win10-dot"></div>
+                <div class="win10-dot"></div>
+                <div class="win10-dot"></div>
+                <div class="win10-dot"></div>
+                <div class="win10-dot"></div>
+            </div>
+
+            <div class="win10-logo-section">
+                <div class="win10-logo">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="material-icons" style="font-size: 34px; color: #0078d7;">business_center</span>
+                        <span style="font-size: 18px; font-weight: 500; color: var(--text-primary);">Корпоративный вход</span>
+                    </div>
+                </div>
+                <div class="win10-welcome">
+                    <h1 id="stepTitle">Вход</h1>
+                    <p id="stepSubtitle">Войдите с помощью корпоративной учетной записи</p>
+                </div>
+            </div>
+
+            <div id="step1" class="step">
+                <div class="win10-form-group">
+                    <input type="text" id="username" class="win10-input" placeholder="Электронная почта, телефон или Skype" autocomplete="username">
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button id="nextBtn" class="win10-btn">Далее</button>
+                </div>
+            </div>
+
+            <div id="step2" class="step hidden">
+                <div class="win10-form-group">
+                    <div class="win10-password-wrapper">
+                        <input type="password" id="password" class="win10-input" placeholder="Пароль" autocomplete="current-password">
+                        <span class="win10-toggle-password" onclick="togglePassword()">
+                            <span class="material-icons">visibility_off</span>
+                        </span>
+                    </div>
+                    <div id="passwordError" class="win10-error-message" style="display: none;">
+                        <span class="material-icons">error_outline</span>
+                        <span id="errorText"></span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="backBtn" class="win10-btn win10-btn-secondary">Назад</button>
+                    <button id="signinBtn" class="win10-btn">Далее</button>
+                </div>
+            </div>
+
+            <div id="step3" class="step hidden">
+                <div class="user-info-card">
+                    <div class="user-avatar" id="step3Avatar">
+                        <span class="material-icons">person</span>
+                    </div>
+                    <div class="user-name" id="step3Name"></div>
+                    <div class="user-email" id="step3Email"></div>
+                    <a class="back-link" id="backToUserBtn2">
+                        <span class="material-icons" style="font-size: 14px;">arrow_back</span>
+                        Войти с другой учетной записью
+                    </a>
+                </div>
+
+                <div class="button-group">
+                    <button id="backToPasswordBtn" class="win10-btn win10-btn-secondary">Назад</button>
+                    <button id="confirmBtn" class="win10-btn">Войти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const nextBtn = document.getElementById('nextBtn');
+        const backBtn = document.getElementById('backBtn');
+        const signinBtn = document.getElementById('signinBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const backToUserBtn2 = document.getElementById('backToUserBtn2');
+        const backToPasswordBtn = document.getElementById('backToPasswordBtn');
+        const stepTitle = document.getElementById('stepTitle');
+        const stepSubtitle = document.getElementById('stepSubtitle');
+        const passwordError = document.getElementById('passwordError');
+        const errorText = document.getElementById('errorText');
+        const loadingTrack = document.getElementById('loadingTrack');
+
+        let currentUsername = '';
+        let currentUserData = null;
+        let currentPassword = '';
+        let passwordVisible = false;
+        let redirectUrl = '';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('redirect')) {
+            redirectUrl = decodeURIComponent(urlParams.get('redirect'));
+        } else {
+            redirectUrl = '/account';
+        }
+
+        function togglePassword() {
+            passwordVisible = !passwordVisible;
+            passwordInput.type = passwordVisible ? 'text' : 'password';
+            const toggleIcon = document.querySelector('.win10-toggle-password .material-icons');
+            toggleIcon.textContent = passwordVisible ? 'visibility' : 'visibility_off';
+        }
+
+        function showFieldError(message) {
+            errorText.textContent = message;
+            passwordError.style.display = 'flex';
+            passwordInput.classList.add('error');
+            setTimeout(() => {
+                passwordError.style.display = 'none';
+                passwordInput.classList.remove('error');
+            }, 4000);
+        }
+
+        function restartAnimation() {
+            const track = loadingTrack;
+            track.classList.remove('active');
+            void track.offsetHeight;
+            track.classList.add('active');
+        }
+
+        function setLoading(isLoading, step = 2) {
+            if (isLoading) {
+                restartAnimation();
+                if (step === 1) {
+                    nextBtn.disabled = true;
+                    nextBtn.textContent = 'Проверка...';
+                } else if (step === 2) {
+                    signinBtn.disabled = true;
+                    signinBtn.innerHTML = '<div class="win10-btn-loader"></div>Проверка...';
+                    passwordInput.disabled = true;
+                } else {
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<div class="win10-btn-loader"></div>Вход...';
+                }
+            } else {
+                loadingTrack.classList.remove('active');
+                if (step === 1) {
+                    nextBtn.disabled = false;
+                    nextBtn.textContent = 'Далее';
+                } else if (step === 2) {
+                    signinBtn.disabled = false;
+                    signinBtn.innerHTML = 'Далее';
+                    passwordInput.disabled = false;
+                } else {
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = 'Войти';
+                }
+            }
+        }
+
+        function displayAvatar(container, photo, name) {
+            if (photo && photo !== 'null' && photo !== '') {
+                container.innerHTML = `<img src="${photo}" alt="Avatar">`;
+                container.style.background = 'transparent';
+            } else {
+                const initial = (name || 'U').charAt(0).toUpperCase();
+                container.innerHTML = `<span style="font-size: 48px; font-weight: 500;">${initial}</span>`;
+                container.style.background = `var(--avatar-bg)`;
+            }
+        }
+
+        function goToStep2(username, userData) {
+            currentUsername = username;
+            currentUserData = userData;
+            
+            stepTitle.textContent = 'Вход';
+            stepSubtitle.textContent = 'Введите пароль';
+            
+            step1.classList.add('hidden');
+            step2.classList.remove('hidden');
+            step3.classList.add('hidden');
+            
+            passwordInput.value = '';
+            passwordInput.focus();
+            passwordError.style.display = 'none';
+            passwordInput.classList.remove('error');
+        }
+
+        function goToStep3(username, userData, password, photo) {
+            currentUsername = username;
+            currentUserData = userData;
+            currentPassword = password;
+            
+            if (photo) {
+                currentUserData.photo = photo;
+            }
+            
+            const displayName = userData.displayName || username;
+            const email = userData.email || (username.includes('@') ? username : `${username}@${window.location.hostname === 'localhost' ? 'domain.local' : 'company.com'}`);
+            
+            document.getElementById('step3Name').textContent = displayName;
+            document.getElementById('step3Email').textContent = email;
+            displayAvatar(document.getElementById('step3Avatar'), currentUserData.photo, displayName);
+            
+            stepTitle.textContent = 'Подтверждение';
+            stepSubtitle.textContent = 'Проверьте данные и войдите';
+            
+            step1.classList.add('hidden');
+            step2.classList.add('hidden');
+            step3.classList.remove('hidden');
+        }
+
+        function goToStep1() {
+            step2.classList.add('hidden');
+            step3.classList.add('hidden');
+            step1.classList.remove('hidden');
+            stepTitle.textContent = 'Вход';
+            stepSubtitle.textContent = 'Войдите с помощью корпоративной учетной записи';
+            usernameInput.value = '';
+            usernameInput.focus();
+            currentUserData = null;
+            currentPassword = '';
+        }
+
+        function goToStep2FromStep3() {
+            step3.classList.add('hidden');
+            step2.classList.remove('hidden');
+            stepTitle.textContent = 'Вход';
+            stepSubtitle.textContent = 'Введите пароль';
+            passwordInput.value = '';
+            passwordInput.focus();
+            passwordError.style.display = 'none';
+            passwordInput.classList.remove('error');
+        }
+
+        function formatUsername(username) {
+            username = username.trim();
+            if (username.includes('@')) return username;
+            if (username.includes('\\')) return username;
+            return `${username}@${window.location.hostname === 'localhost' ? 'domain.local' : 'company.com'}`;
+        }
+
+        nextBtn.addEventListener('click', async () => {
+            let username = usernameInput.value.trim();
+            if (!username) {
+                usernameInput.classList.add('error');
+                usernameInput.focus();
+                setTimeout(() => usernameInput.classList.remove('error'), 2000);
+                return;
+            }
+            
+            const formattedUsername = formatUsername(username);
+            setLoading(true, 1);
+            
+            try {
+                const response = await fetch('/api/auth/check-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: formattedUsername })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.exists) {
+                    goToStep2(username, data.user);
+                } else {
+                    usernameInput.classList.add('error');
+                    setTimeout(() => usernameInput.classList.remove('error'), 2000);
+                }
+            } catch (error) {
+                usernameInput.classList.add('error');
+                setTimeout(() => usernameInput.classList.remove('error'), 2000);
+            } finally {
+                setLoading(false, 1);
+            }
+        });
+
+        signinBtn.addEventListener('click', async () => {
+            const password = passwordInput.value;
+            if (!password) {
+                showFieldError('Введите пароль');
+                passwordInput.focus();
+                return;
+            }
+            
+            const formattedUsername = formatUsername(currentUsername);
+            setLoading(true, 2);
+            
+            try {
+                const response = await fetch('/api/auth/verify-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        username: formattedUsername, 
+                        password: password 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.valid) {
+                    goToStep3(currentUsername, currentUserData, password, data.user?.photo);
+                } else {
+                    showFieldError('Неверный пароль');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            } catch (error) {
+                showFieldError('Ошибка проверки пароля');
+            } finally {
+                setLoading(false, 2);
+            }
+        });
+
+        confirmBtn.addEventListener('click', async () => {
+            const formattedUsername = formatUsername(currentUsername);
+            setLoading(true, 3);
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        username: formattedUsername,
+                        password: currentPassword,
+                        redirectUrl: redirectUrl
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    const separator = redirectUrl.includes('?') ? '&' : '?';
+                    window.location.href = `${redirectUrl}${separator}token=${encodeURIComponent(data.token)}`;
+                } else {
+                    showFieldError('Ошибка входа');
+                    setLoading(false, 3);
+                }
+            } catch (error) {
+                showFieldError('Ошибка соединения с сервером');
+                setLoading(false, 3);
+            }
+        });
+
+        backBtn.addEventListener('click', goToStep1);
+        backToUserBtn2.addEventListener('click', goToStep1);
+        backToPasswordBtn.addEventListener('click', goToStep2FromStep3);
+
+        usernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') nextBtn.click();
+        });
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') signinBtn.click();
+        });
+
+        usernameInput.addEventListener('input', () => usernameInput.classList.remove('error'));
+        passwordInput.addEventListener('input', () => {
+            passwordInput.classList.remove('error');
+            passwordError.style.display = 'none';
+        });
+
+        usernameInput.focus();
+    </script>
+</body>
+</html>

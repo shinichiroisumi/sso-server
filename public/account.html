@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аккаунт - Корпоративный портал</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: rgba(255, 255, 255, 0.96);
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --border-color: #cccccc;
+            --border-focus: #0078d7;
+            --input-bg: #ffffff;
+            --button-bg: #0078d7;
+            --button-hover: #005a9e;
+            --button-text: #ffffff;
+            --error-color: #c50500;
+            --success-color: #107c10;
+            --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --avatar-bg: #0078d7;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: rgba(27, 27, 27, 0.96);
+                --text-primary: #ffffff;
+                --text-secondary: #cccccc;
+                --border-color: #3c3c3c;
+                --border-focus: #0078d7;
+                --input-bg: #1c1c1c;
+                --button-bg: #0078d7;
+                --button-hover: #005a9e;
+                --button-text: #ffffff;
+                --error-color: #e74856;
+                --success-color: #81c995;
+                --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+                --avatar-bg: #0078d7;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #0d1117 0%, #1a1a2e 100%);
+            }
+        }
+
+        .navbar {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo .material-icons {
+            font-size: 28px;
+            color: #0078d7;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--avatar-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logout-btn:hover {
+            background: var(--border-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--bg-primary);
+            border-radius: 0;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header .material-icons {
+            font-size: 24px;
+            color: #0078d7;
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--avatar-bg);
+            margin: 0 auto 16px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-large .material-icons {
+            font-size: 64px;
+            color: white;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-label {
+            width: 140px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .info-value {
+            flex: 1;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid #0078d7;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 640px) {
+            .info-row {
+                flex-direction: column;
+            }
+            .info-label {
+                width: 100%;
+                margin-bottom: 6px;
+            }
+            .container {
+                padding: 0 16px;
+            }
+            .card-header {
+                padding: 16px 20px;
+            }
+            .card-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <span class="material-icons">business_center</span>
+            <span>Корпоративный портал</span>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar" id="navAvatar"></div>
+            <button class="logout-btn" id="logoutBtn">
+                <span class="material-icons">exit_to_app</span>
+                <span>Выйти</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="container" id="app">
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Загрузка...</p>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentToken = null;
+
+        function getTokenFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            if (token) {
+                localStorage.setItem('sso_token', token);
+                const newUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+                return token;
+            }
+            return localStorage.getItem('sso_token');
+        }
+
+        async function checkAuth() {
+            currentToken = getTokenFromUrl();
+            
+            if (!currentToken) {
+                window.location.href = '/login';
+                return null;
+            }
+            
+            try {
+                const response = await fetch('/api/verify/token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: currentToken })
+                });
+                
+                const data = await response.json();
+                
+                if (data.valid) {
+                    currentUser = data.user;
+                    return currentUser;
+                } else {
+                    localStorage.removeItem('sso_token');
+                    window.location.href = '/login';
+                    return null;
+                }
+            } catch (err) {
+                window.location.href = '/login';
+                return null;
+            }
+        }
+
+        async function getPhoto() {
+            if (!currentToken) return null;
+            
+            try {
+                const response = await fetch('/api/verify/photo', {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.photo;
+                }
+                return null;
+            } catch (err) {
+                return null;
+            }
+        }
+
+        function displayAvatar(container, photo, name, isLarge = false) {
+            if (!container) return;
+            if (photo && photo !== 'null' && photo !== '') {
+                container.innerHTML = `<img src="${photo}" alt="Avatar">`;
+            } else {
+                const initial = (name || 'U').charAt(0).toUpperCase();
+                const fontSize = isLarge ? '48px' : '16px';
+                container.innerHTML = `<span style="font-size: ${fontSize}; font-weight: 500;">${initial}</span>`;
+            }
+        }
+
+        async function renderDashboard() {
+            const photo = await getPhoto();
+            if (photo) {
+                currentUser.photo = photo;
+            }
+            
+            const navAvatar = document.getElementById('navAvatar');
+            if (navAvatar) {
+                displayAvatar(navAvatar, currentUser.photo, currentUser.displayName);
+            }
+            
+            const html = `
+                <div class="card">
+                    <div class="card-header">
+                        <span class="material-icons">account_circle</span>
+                        <h2>Профиль пользователя</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="avatar-large" id="avatarLarge"></div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">Логин</div>
+                            <div class="info-value">${escapeHtml(currentUser.username)}</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">Отображаемое имя</div>
+                            <div class="info-value">${escapeHtml(currentUser.displayName || currentUser.username)}</div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <div class="info-label">Email</div>
+                            <div class="info-value">${escapeHtml(currentUser.email || 'не указан')}</div>
+                        </div>
+                        ${currentUser.department ? `
+                        <div class="info-row">
+                            <div class="info-label">Отдел</div>
+                            <div class="info-value">${escapeHtml(currentUser.department)}</div>
+                        </div>
+                        ` : ''}
+                        ${currentUser.title ? `
+                        <div class="info-row">
+                            <div class="info-label">Должность</div>
+                            <div class="info-value">${escapeHtml(currentUser.title)}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <span class="material-icons">security</span>
+                        <h2>Безопасность</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="info-row">
+                            <div class="info-label">Тип аутентификации</div>
+                            <div class="info-value">Active Directory (SSO)</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Статус сессии</div>
+                            <div class="info-value" style="color: var(--success-color);">● Активна</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('app').innerHTML = html;
+            
+            const avatarLarge = document.getElementById('avatarLarge');
+            if (avatarLarge) {
+                displayAvatar(avatarLarge, currentUser.photo, currentUser.displayName, true);
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function init() {
+            const user = await checkAuth();
+            if (user) {
+                await renderDashboard();
+            }
+            
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
+                    localStorage.removeItem('sso_token');
+                    window.location.href = '/login';
+                });
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
