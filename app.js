@@ -48,6 +48,7 @@ process.env.AD_BIND_PASSWORD = config.ad.bindPassword;
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/verify', require('./routes/verify'));
+app.use('/api/devices', require('./routes/devices'));
 
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
