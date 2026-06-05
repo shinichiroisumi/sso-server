@@ -34,7 +34,7 @@ function extractToken(authHeader) {
   return authHeader.substring(7);
 }
 
-function createADDeviceAccount(adUsername, user, deviceInfo, callback) {
+function createADDeviceAccount(adUsername, hostname, deviceInfo, callback) {
   const client = ldap.createClient({
     url: AD_URL,
     tlsOptions: { rejectUnauthorized: false }
@@ -48,22 +48,18 @@ function createADDeviceAccount(adUsername, user, deviceInfo, callback) {
 
     const computersCN = `CN=Computers,${AD_BASE_DN}`;
     const dn = `CN=${adUsername},${computersCN}`;
-    const userPrincipalName = `${adUsername}@${AD_DOMAIN}`;
+    const samAccountName = `${adUsername}$`;
+    const dnsHostName = `${hostname}.${AD_DOMAIN.toLowerCase()}`;
 
     const entry = {
       cn: adUsername,
-      objectClass: ['top', 'person', 'organizationalPerson', 'user', 'computer'],
-      sAMAccountName: `${adUsername}$`,
-      userPrincipalName: userPrincipalName,
-      displayName: deviceInfo.device_name || `${deviceInfo.manufacturer} ${deviceInfo.model}`,
-      description: `Device: ${deviceInfo.manufacturer} ${deviceInfo.model}, Android ${deviceInfo.android_version}`,
+      objectClass: ['computer'],
+      sAMAccountName: samAccountName,
+      dNSHostName: dnsHostName,
+      userAccountControl: 4096,
       operatingSystem: 'Android',
-      operatingSystemVersion: deviceInfo.android_version,
-      name: adUsername,
-      company: user.company || '',
-      department: user.department || '',
-      title: user.title || '',
-      mail: user.email || ''
+      operatingSystemVersion: deviceInfo.android_version || '',
+      description: `${deviceInfo.manufacturer || ''} ${deviceInfo.model || ''}`.trim() || 'Android device'
     };
 
     client.add(dn, entry, (err) => {
@@ -110,10 +106,14 @@ router.post('/link-device', async (req, res) => {
     return res.status(401).json({ error: 'Invalid token' });
   }
 
-  const { device_uuid, manufacturer, model, android_version, sdk_version, device_name } = req.body;
+  const { device_uuid, hostname, manufacturer, model, android_version, sdk_version, device_name } = req.body;
 
   if (!device_uuid) {
     return res.status(400).json({ error: 'device_uuid required' });
+  }
+
+  if (!hostname) {
+    return res.status(400).json({ error: 'hostname required' });
   }
 
   const devices = loadDevices();
@@ -121,16 +121,17 @@ router.post('/link-device', async (req, res) => {
     return res.status(409).json({ error: 'Device already linked' });
   }
 
-  const safeUsername = user.sub.replace(/[^a-zA-Z0-9]/g, '_');
+  const safeHostname = hostname.toLowerCase().replace(/[^a-zA-Z0-9-]/g, '');
   const shortUuid = device_uuid.replace(/-/g, '').substring(0, 8);
-  const adUsername = `${safeUsername}_D_${shortUuid}`;
+  const adUsername = `${safeHostname}_${shortUuid}`;
 
   try {
     await new Promise((resolve, reject) => {
-      createADDeviceAccount(adUsername, user, {
+      createADDeviceAccount(adUsername, safeHostname, {
         manufacturer,
         model,
         android_version,
+        sdk_version,
         device_name
       }, (err, result) => {
         if (err) reject(err);
@@ -140,6 +141,7 @@ router.post('/link-device', async (req, res) => {
 
     devices[device_uuid] = {
       ad_username: adUsername,
+      hostname: safeHostname,
       user_username: user.sub,
       user_display_name: user.displayName,
       user_email: user.email,
@@ -147,7 +149,7 @@ router.post('/link-device', async (req, res) => {
       model: model || '',
       android_version: android_version || '',
       sdk_version: sdk_version || '',
-      device_name: device_name || `${manufacturer} ${model}`,
+      device_name: device_name || `${manufacturer} ${model}`.trim(),
       linked_at: new Date().toISOString(),
       last_sync: new Date().toISOString()
     };
@@ -156,6 +158,8 @@ router.post('/link-device', async (req, res) => {
     res.json({
       success: true,
       ad_username: adUsername,
+      hostname: safeHostname,
+      fqdn: `${safeHostname}.${AD_DOMAIN.toLowerCase()}`,
       message: 'Device linked successfully'
     });
   } catch (err) {
@@ -181,6 +185,7 @@ router.get('/devices', (req, res) => {
     .map(([uuid, data]) => ({
       uuid: uuid,
       ad_username: data.ad_username,
+      hostname: data.hostname,
       manufacturer: data.manufacturer,
       model: data.model,
       android_version: data.android_version,
@@ -247,7 +252,7 @@ router.get('/device-status', (req, res) => {
   const device = devices[device_uuid];
 
   if (device && device.user_username === user.sub) {
-    res.json({ linked: true, ad_username: device.ad_username });
+    res.json({ linked: true, ad_username: device.ad_username, hostname: device.hostname });
   } else {
     res.json({ linked: false });
   }

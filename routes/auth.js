@@ -3,6 +3,28 @@ const router = express.Router();
 const ActiveDirectory = require('activedirectory2');
 const jwt = require('jsonwebtoken');
 const ldap = require('ldapjs');
+const fs = require('fs');
+const path = require('path');
+
+let tokenExpiry;
+
+try {
+  const configPath = path.join(__dirname, '../config/server.config.json');
+  if (fs.existsSync(configPath)) {
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    tokenExpiry = config.auth.tokenExpiry;
+    if (!tokenExpiry) {
+      console.error('Error: tokenExpiry not set in config/server.config.json');
+      process.exit(1);
+    }
+  } else {
+    console.error('Error: Config file not found. Run: npm run setup');
+    process.exit(1);
+  }
+} catch (err) {
+  console.error('Error loading config:', err.message);
+  process.exit(1);
+}
 
 const adConfig = {
   url: process.env.AD_URL,
@@ -171,7 +193,7 @@ router.post('/login', (req, res) => {
             userPrincipalName: userPrincipalName
           },
           process.env.JWT_SECRET,
-          { expiresIn: '8h' }
+          { expiresIn: tokenExpiry }
         );
         
         res.json({
